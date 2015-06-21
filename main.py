@@ -1,4 +1,4 @@
-__author__ = 'articuno'
+__author__ = 'Eric'
 
 import requests
 import os
@@ -6,7 +6,7 @@ LOGIN_URL = "https://anulib.anu.edu.au/using-the-library/book-a-library-group-st
 
 
 def ddFormat(num):
-    return str(num) if (num >= 10) else return ('0' + str(num)) 
+    return str(num) if (num >= 10) else ('0' + str(num)) 
 
 
 # expects (dd, mm), outputs `2015-mm-dd`
@@ -47,7 +47,7 @@ def run():
         q = s.post(p.url, data = getBranchDetails('Chifley', dayMonthToISO(22, 6)))
         if (q.text.count('closed') > 4):
             return "Error: library closed that day"
-        r = s.post(q.url, data = getRoomDetails('Chifley', 22, 9, 00, 90, '3.04'))
+        r = s.post(q.url, data = getRoomDetails('Chifley', 22, 6, 9, 00, 90, '3.04'))
         if (r.text.count('Sorry') > 0):
             if (r.text.count('conflicts') > 0):
                 return "Error: conflicts with another booking"
