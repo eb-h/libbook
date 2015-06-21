@@ -1,4 +1,4 @@
-__author__ = 'articuno'
+__author__ = 'Eric'
 
 import requests
 import os
