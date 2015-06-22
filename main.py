@@ -4,7 +4,7 @@ import requests
 import getopt
 import sys
 import os
-LOGIN_URL = "https://anulib.anu.edu.au/using-the-library/book-a-library"
+LOGIN_URL = "https://anulib.anu.edu.au/using-the-library/book-a-library" + \
 "-group-study-room/index.html"
 USAGE_STRING = "Usage: python3 main.py [-l library] [-h hour] [-m minute] \
         [-d day] [-o month] [-e length] [-r room]"
@@ -34,21 +34,21 @@ def parseArgs():
                 quit(USAGE_STRING)
             library = arg
         elif opt in ('-d', '--day'):
-            if (1 > arg or 31 < arg):
+            if (1 > int(arg) or 31 < int(arg)):
                 quit(USAGE_STRING)
             day = int(arg)
         elif opt in ('-o', '--month'):
-            if (1 > arg or 12 < arg):
+            if (1 > int(arg) or 12 < int(arg)):
                 quit(USAGE_STRING)
             month = int(arg)
         elif opt in ('-h', '--hour'):
             hour = int(arg)
         elif opt in ('-m', '--minute'):
-            if (1 > arg or 60 < arg):
+            if (1 > int(arg) or 60 < int(arg)):
                 quit(USAGE_STRING)
             minute = int(arg)
         elif opt in ('-e', '--length'):
-            if (1 > arg or 120 < arg or arg % 15 != 0):
+            if (1 > int(arg) or 120 < int(arg) or int(arg) % 15 != 0):
                 quit(USAGE_STRING)
             length = int(arg)
         elif opt in ('-r', '--room'):
@@ -104,11 +104,15 @@ def run():
         r = s.post(q.url, data=getRoomDetails(
             library, day, month, hour, minute, length, room))
         if (r.text.count('Sorry') > 0):
-            if (r.text.count('conflicts') > 0):
+            if (r.text.count('conflicts with another booking') > 0):
                 return "Error: room booked by someone else at that time"
-            elif (r.text.count('Already') > 0):
+            elif (r.text.count('already have two bookings') > 0):
+                return "Error: Maximum of two bookings per day already reached"
+            elif (r.text.count('you already booked') > 0):
                 return "Error: conflicts with your other bookings"
             else:
+                with open('logfile', 'w') as f:
+                    f.write(r.text)
                 return "Error: Generic error, please report"
         return "Room was (probably) booked successfully"
 

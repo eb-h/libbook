@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>Group study room booking form</title>
+<meta name="DC.Creator.Email" content="library.web@anu.edu.au" />
+<meta name="DC.Subject" content="library services, room booking" />
+<meta name="DC.Description" content="Self-booking form for ANU Library building group study rooms" />
+
+<link rel="stylesheet" type="text/css" href="book.css" />
+<script type="text/javascript">
+addLoadListener(function() {
+if(/Welcome/.test(document.getElementsByTagName('H2')[0].innerHTML)) {
+document.getElementById('startover').className='hideboard';
+}
+});
+</script>
+
+</head>
+<body>
+<div class="doublewide">
+
+<h1>Book a Library group study room</h1>
+
+<br />
+<b>Notice</b>:  Undefined variable: CONSECUTIVE in <b>/export/web/anulib/using-the-library/book-a-library-group-study-room/_code/SISBooking.php</b> on line <b>598</b><br />
+<!-- bookthisroom.txt  --> <h2></h2>
+<div id="bookingresponse">
+<div class="msg-error marginbottom">Sorry - you already have two bookings today. You can delete one and replace it with another booking.</div>
+</div>
+<div class="w-wide box-solid left"> 
+
+<div  class="nopad"><h3>3.04 in Chifley Library:</h3><p>Level 3</p><p>DVD all regions, video player, PC, whiteboard</p><p></p>
+</div>
+
+<div class="nopad ">
+<table width="100%"> <caption>On Sunday, 28 June 2015 (closed  closed )<br /> you can book this room for any time not listed here - but only one room at a time</caption> 
+<tr><th colspan="2">Already booked for these times</th></tr>
+<tr><th>From</th><th>To</th></tr><tr ><td class="padleft">10:00</td><td>10:45</td></tr><tr ><td class="padleft">11:00</td><td>11:45</td></tr>
+</table>
+
+</div>
+
+</div>
+
+<div class="nopad w-wide nopad right">
+
+<div class="small marginbottom">Bookings are only valid during <a title="" href="/using-the-library/opening-hours/">building opening hours</a>.
+Consecutive bookings are not allowed - however when you reach the last 15 minutes of your booking, you can book again if the room is available. The limit of each booking is 2 hours, or next booking, whichever is shorter.
+</div>
+<form method="get" action="index.html" id="bform">
+<input type="hidden" value="2015-06-28" name="bday" />
+<input type="hidden" value="3.04" name="room_no" />
+<input type="hidden" value="Chifley Library" name="building" />
+<label class="left marginright" for="bhour">Start time of your booking:</label>
+
+<div class="padbottom">
+<select class="left" name="bhour" id="bhour">
+<option value="08">08</option>
+<option value="09">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+
+
+</select> 
+<div class="large strong left">&nbsp;:&nbsp;
+</div>
+<select class="left" name="bminute" id="bminute">
+<option value="00" selected="selected">00</option>
+<option value="15">15</option>
+<option value="30">30</option>
+<option value="45">45</option>
+</select>
+
+</div>
+<br class="clear" />
+<label class="left" for="1_bookingPeriod">Amount of time required</label>
+
+<div class="left marginleft">
+<!--input type="radio" value="15" name="bookingPeriod" id="1_bookingPeriod" /> <label for="1_bookingPeriod">15 min</label><br /-->
+<input type="radio" value="30" name="bookingPeriod" id="2_bookingPeriod" /> <label for="2_bookingPeriod">30 min</label><br />
+<input type="radio" value="45" name="bookingPeriod" id="3_bookingPeriod" /> <label for="3_bookingPeriod">45 min</label><br />
+<input type="radio" value="60" name="bookingPeriod" id="4_bookingPeriod" /> <label for="4_bookingPeriod">1 hour</label><br />
+<input type="radio" value="75" name="bookingPeriod" id="5_bookingPeriod" /> <label for="5_bookingPeriod">1 hour and 15 min</label><br />
+<input type="radio" value="90" name="bookingPeriod" id="6_bookingPeriod" /> <label for="6_bookingPeriod">1 hour and 30 min</label><br />
+<input type="radio" value="105" name="bookingPeriod" id="7_bookingPeriod" /> <label for="7_bookingPeriod">1 hour and 45 min</label><br />
+<input type="radio" value="120" name="bookingPeriod" id="8_bookingPeriod" /> <label for="8_bookingPeriod">2 hours</label>
+
+<div class="margintop marginbottom"><label class="left padright" for="user_note">Optional note:</label> <textarea rows="3" cols="18" class="right" id="user_note" name="user_note"></textarea> 
+</div>
+<br class="clear" />
+<input  class="btn-uni-grad btn-small margintop" type="submit" value="Save" name="submitBooking" id="submitBooking" />
+</form>
+
+</div><br />
+
+</div>
+<script type="text/javascript">
+var f=document.getElementById('bform');
+var l=f.bookingPeriod.length;
+document.getElementById('submitBooking').onclick=function() {
+for(var i=0;i<l;i++) {
+if(f.bookingPeriod[i].checked==true) {return true;}
+}
+alert('Please enter the amount of time required');
+return false;
+}
+</script>
