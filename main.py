@@ -111,9 +111,14 @@ def run():
             elif (r.text.count('you already booked') > 0):
                 return "Error: conflicts with your other bookings"
             else:
-                with open('logfile', 'w') as f:
+                with open('log', 'w') as f:
                     f.write(r.text)
                 return "Error: Generic error, please report"
-        return "Room was (probably) booked successfully"
+        if (r.text.count('You have made the following booking:') > 0):
+            return "Room was (probably) booked successfully"
+        else:
+            with open('log', 'w') as f:
+                f.write(r.text)
+            return "Error: Generic error, please report"
 
 print(run())
