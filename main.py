@@ -6,15 +6,17 @@ import sys
 import os
 LOGIN_URL = "https://anulib.anu.edu.au/using-the-library/book-a-library"
 "-group-study-room/index.html"
+USAGE_STRING = "Usage: python3 main.py [-l library] [-h hour] [-m minute] \
+        [-d day] [-o month] [-e length] [-r room]"
 
 
-options, remainder = getopt.getopt(sys.argv[1:], 'l:h:m:d:r:', ['library=',
-                                                                'day=',
-                                                                'month=',
-                                                                'hour=',
-                                                                'minute=',
-                                                                'length=',
-                                                                'room='])
+options, remainder = getopt.getopt(sys.argv[1:], 'l:h:m:d:o:e:r:', ['library=',
+                                                                    'day=',
+                                                                    'month=',
+                                                                    'hour=',
+                                                                    'minute=',
+                                                                    'length=',
+                                                                    'room='])
 
 
 def parseArgs():
@@ -27,20 +29,27 @@ def parseArgs():
     room = '3.04'
     for opt, arg in options:
         if opt in ('-l', '--library'):
-            if (library != 'Chifley' and
-                    library != 'Hancock' and library != 'Law'):
-                return "Error: library unknown"
-            else:
-                library = arg
-        elif opt == '--day':
+            if (arg != 'Chifley' and
+                    arg != 'Hancock' and arg != 'Law'):
+                quit(USAGE_STRING)
+            library = arg
+        elif opt in ('-d', '--day'):
+            if (1 > arg or 31 < arg):
+                quit(USAGE_STRING)
             day = int(arg)
-        elif opt == '--month':
+        elif opt in ('-o', '--month'):
+            if (1 > arg or 12 < arg):
+                quit(USAGE_STRING)
             month = int(arg)
         elif opt in ('-h', '--hour'):
             hour = int(arg)
         elif opt in ('-m', '--minute'):
+            if (1 > arg or 60 < arg):
+                quit(USAGE_STRING)
             minute = int(arg)
-        elif opt == '--length':
+        elif opt in ('-e', '--length'):
+            if (1 > arg or 120 < arg or arg % 15 != 0):
+                quit(USAGE_STRING)
             length = int(arg)
         elif opt in ('-r', '--room'):
             room = str(arg)
