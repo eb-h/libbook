@@ -4,16 +4,17 @@ import requests
 import getopt
 import sys
 import os
-LOGIN_URL = "https://anulib.anu.edu.au/using-the-library/book-a-library-group-study-room/index.html"
+LOGIN_URL = "https://anulib.anu.edu.au/using-the-library/book-a-library"
+"-group-study-room/index.html"
 
 
 options, remainder = getopt.getopt(sys.argv[1:], 'l:h:m:d:r:', ['library=',
-                                                                    'day=',
-                                                                    'month=',
-                                                                    'hour=',
-                                                                    'minute=',
-                                                                    'length=',
-                                                                    'room='])
+                                                                'day=',
+                                                                'month=',
+                                                                'hour=',
+                                                                'minute=',
+                                                                'length=',
+                                                                'room='])
 
 
 def parseArgs():
@@ -26,7 +27,8 @@ def parseArgs():
     room = '3.04'
     for opt, arg in options:
         if opt in ('-l', '--library'):
-            if (library != 'Chifley' and library != 'Hancock' and library != 'Law'):
+            if (library != 'Chifley' and
+                    library != 'Hancock' and library != 'Law'):
                 return "Error: library unknown"
             else:
                 library = arg
@@ -56,42 +58,45 @@ def dayMonthToISO(day, month):
 
 def getAccountDetails(username, password):
     return dict([
-            ('inp_uid', username), 
-            ('inp_passwd', password)])
+        ('inp_uid', username),
+        ('inp_passwd', password)])
 
 
 def getBranchDetails(building, day):
     return dict([
-            ('ajax', '1'), 
-            ('building', building), 
-            ('bday', day), 
-            ('showBookingsForSelectedBuilding', '1')])
+        ('ajax', '1'),
+        ('building', building),
+        ('bday', day),
+        ('showBookingsForSelectedBuilding', '1')])
 
 
 def getRoomDetails(building, day, month, hour, minute, length, room):
     return dict([
-            ('ajax', '1'),
-            ('building', building + '+Library'),
-            ('bday', dayMonthToISO(day, month)),
-            ('bhour', ddFormat(hour)),
-            ('bminute', ddFormat(minute)),
-            ('bookingPeriod', length),
-            ('room_no', room),
-            ('submitBooking', '1')])
+        ('ajax', '1'),
+        ('building', building + '+Library'),
+        ('bday', dayMonthToISO(day, month)),
+        ('bhour', ddFormat(hour)),
+        ('bminute', ddFormat(minute)),
+        ('bookingPeriod', length),
+        ('room_no', room),
+        ('submitBooking', '1')])
 
 
 def run():
     library, day, month, hour, minute, length, room = parseArgs()
     ''' returns string denoting success/failure & reason '''
     with requests.Session() as s:
-        p = s.post(LOGIN_URL, data = getAccountDetails(os.environ['ANU_USER'], os.environ['ANU_PASS']))
-        q = s.post(p.url, data = getBranchDetails(library, dayMonthToISO(day, month)))
+        p = s.post(LOGIN_URL, data=getAccountDetails(
+            os.environ['ANU_USER'], os.environ['ANU_PASS']))
+        q = s.post(p.url, data=getBranchDetails(
+            library, dayMonthToISO(day, month)))
         if (q.text.count('closed') > 4):
             return "Error: library closed that day"
-        r = s.post(q.url, data = getRoomDetails(library, day, month, hour, minute, length, room))
+        r = s.post(q.url, data=getRoomDetails(
+            library, day, month, hour, minute, length, room))
         if (r.text.count('Sorry') > 0):
             if (r.text.count('conflicts') > 0):
-                return "Error: room already booked by someone else at that time"
+                return "Error: room booked by someone else at that time"
             elif (r.text.count('Already') > 0):
                 return "Error: conflicts with your other bookings"
             else:
