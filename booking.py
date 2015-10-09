@@ -114,7 +114,7 @@ def writeToLogFile(nameOfFile, textToWrite):
         f.write(textToWrite)
 
 
-BookingState = Enum('BookingState', 'Successful LibraryClosed ConflictingBooking GenericBookingException')
+BookingState = Enum('BookingState', 'Successful LibraryClosed MaximumBookingsReached ConflictingBooking GenericBookingException')
 
 
 def makeBooking(library, day, month, hour, minute, length, room, user, pwd, daysFromNowFlag):
@@ -125,29 +125,24 @@ def makeBooking(library, day, month, hour, minute, length, room, user, pwd, days
         q = s.post(p.url, data=getBranchDetails(
             library, day, month, daysFromNowFlag))
         if (q.text.count('closed') > 4):
-            raise LibraryClosed
-            return "Error: library closed that day"
+            return BookingState.LibraryClosed
         r = s.post(q.url, data=getRoomDetails(
             library, day, month, hour, minute, length, room, daysFromNowFlag))
         if (r.text.count('Sorry') > 0):
             if (r.text.count('conflicts with another booking') > 0):
-                raise ConflictingBooking
-                return "Error: room booked by someone else at that time"
+                return BookingState.ConflictingBooking
             elif (r.text.count('already have two bookings') > 0):
-                return "Error: Maximum of two bookings per day already reached"
+                return BookingState.MaximumBookingsReached
             elif (r.text.count('you already booked') > 0):
-                raise ConflictingBooking
-                return "Error: conflicts with your other bookings"
+                return BookingState.ConflictingBooking
             else:
                 writeToLogFile('log', r.text)
-                raise GenericBookingException
-                return "Error: Generic error, please report"
+                return BookingState.GenericBookingException
         if (r.text.count('You have made the following booking:') > 0):
-            return "Room was (probably) booked successfully"
+            return BookingState.Successful
         else:
             writeToLogFile('log', r.text)
-            raise GenericBookingException
-            return "Error: Generic error, please report"
+            return BookingState.GenericBookingException
 
 if __name__ == "__main__":
     library, day, month, hour, minute, length, room, daysFromNowFlag = parseArgs()
